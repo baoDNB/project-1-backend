@@ -7,7 +7,7 @@ const orderSchema = new mongoose.Schema({
             amount: { type: Number, required: true },
             image: { type: String, required: true },
             price: { type: String, required: true },
-            discount:{type:Number},
+            discount: { type: Number },
             product: {
                 type: mongoose.Schema.Types.ObjectId,
                 ref: 'Product',
@@ -23,7 +23,7 @@ const orderSchema = new mongoose.Schema({
     },
     paymentMethod: { type: String, required: true },
     itemsPrice: { type: Number, required: true },
-    shippingPrice: { type: Number, required: true },
+    shippingPrice: { type: Number },
     totalPrice: { type: Number, required: true },
     user: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
     isPaid: { type: Boolean, default: false },

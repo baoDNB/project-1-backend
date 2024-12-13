@@ -2,58 +2,62 @@ const UserService = require('../services/UserService')
 const JwtService = require('../services/JwtService')
 
 
-const createUser = async(req ,res)=>{
-    try{
-        const{ email, password, confirmPassword} = req.body
-        const reg = /^\w+([-+.']\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$/
-        const isCheckEmail =reg.test(email)
-        if( !email || !password || !confirmPassword ){
-            return res.status(200).json({
-                status:'ERR',
-                message:'The input is required'
-            })
-        }else if(!isCheckEmail){
-            return res.status(200).json({
-                status:'ERR',
-                message:'The input is email'
-            })
-        }else if (password !== confirmPassword){
-            return res.status(200).json({
-                status:'ERR',
-                message:'The password is equal comfirmPassword'
-            })
+const createUser = async (req, res) => {
+    try {
+        const { email, password, confirmPassword } = req.body;
+        const reg = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        const isCheckEmail = reg.test(email);
+
+        if (!email || !password || !confirmPassword) {
+            return res.status(400).json({
+                status: 'ERR',
+                message: 'All fields are required'
+            });
+        } else if (!isCheckEmail) {
+            return res.status(400).json({
+                status: 'ERR',
+                message: 'Please provide a valid email address'
+            });
+        } else if (password !== confirmPassword) {
+            return res.status(400).json({
+                status: 'ERR',
+                message: 'Passwords do not match'
+            });
         }
-        const response = await UserService.createUser(req.body)
-        return res.status(200).json(response)
-    } catch(e){
-        return res.status(404).json({
-            message:e
-        })
+
+        const response = await UserService.createUser(req.body);
+        return res.status(201).json(response);
+    } catch (e) {
+        return res.status(500).json({
+            status: 'ERR',
+            message: e.message || 'Internal Server Error'
+        });
     }
-}
+};
+
 const loginUser = async(req ,res)=>{
     try{
         const{ email, password} = req.body
         const reg = /^\w+([-+.']\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$/
         const isCheckEmail =reg.test(email)
         if( !email || !password ){
-            return res.status(200).json({
+            return res.status(400).json({
                 status:'ERR',
-                message:'The input is required'
+                message:'Hãy điền các thông tin'
             })
         }else if(!isCheckEmail){
-            return res.status(200).json({
+            return res.status(400).json({
                 status:'ERR',
-                message:'The input is email'
+                message:'Hãy nhập chính xác email'
             })
         }
         const response = await UserService.loginUser(req.body)
         const { refresh_token, ...newReponse }= response
-        // console.log('response',response)
+
         res.cookie('refresh_token', refresh_token, {
             httpOnly: true,
             secure: false,
-            samesite:'strict'
+            samesite:'Strict'
         })
         return res.status(200).json(newReponse)
     } catch(e){

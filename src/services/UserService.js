@@ -44,7 +44,7 @@ const loginUser =(userLogin)=>{
             if(checkUser === null){
                 resolve({
                     status:'ERR',
-                    message:'The user is not defined'
+                    message:'Người dùng không tồn tại'
                 })
             }
             const comparePassword = bcrypt.compareSync(password,checkUser.password)
@@ -52,7 +52,7 @@ const loginUser =(userLogin)=>{
             if(!comparePassword){
                 resolve({
                     status:'ERR',
-                    message:'The user or password is incorrect'
+                    message:'Người dùng hoặc mật khẩu không đúng'
                 })
             }
             const access_token = await genneralAccessToken({
